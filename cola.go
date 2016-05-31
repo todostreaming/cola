@@ -88,6 +88,13 @@ func (c *Cola) Keeping() {
 	}
 }
 
+func (c *Cola) Len() int {
+	c.mu_pls.Lock()
+	defer c.mu_pls.Unlock()
+	
+	return len(c.orden)
+}
+
 func (c *Cola) Print() {
 	c.mu_pls.Lock()
 	defer c.mu_pls.Unlock()
