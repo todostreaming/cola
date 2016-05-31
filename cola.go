@@ -49,6 +49,12 @@ func (c *Cola) Next() (string, float64) {
 	c.mu_pls.Lock()
 	defer c.mu_pls.Unlock()
 
+	if len(c.orden) < 1 {
+		return "",0.0
+	}
+	if len(c.orden)-1 < c.index {
+		return "",0.0
+	}
 	segment = c.orden[c.index]
 	duration = c.segmento[segment]
 	c.index++
@@ -60,22 +66,31 @@ func (c *Cola) Next() (string, float64) {
 func (c *Cola) Keeping() {
 	c.mu_pls.Lock()
 	defer c.mu_pls.Unlock()
-
+	
+	if len(c.orden) < 1 {
+		return
+	}
 	copia := []string{}
 	for _, v := range c.orden {
 		copia = append(copia, v)
 	}
-	index_segment := c.orden[c.index]
 	now := time.Now().Unix()
+	deleted := 0
 	for _, s := range copia {
 		tiempo := now - c.timestamp[s]
 		if tiempo > c.timeout {
 			c.orden = c.orden[1:]
 			delete(c.segmento, s)
 			delete(c.timestamp, s)
+			deleted++
 		}
 	}
+	if len(c.orden)-1 < c.index {
+		c.index = c.index - deleted
+		return
+	}
 	found := false
+	index_segment := c.orden[c.index]
 	for i, s := range c.orden {
 		if index_segment == s {
 			found = true
