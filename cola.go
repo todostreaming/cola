@@ -50,7 +50,7 @@ func (c *Cola) Add(segment string, duration float64) {
 	c.length++
 }
 
-// devuelve el segmento, duracion del primero en la cola y la longitud actual de la cola
+// devuelve el segmento, duracion del primero en la cola, si existe
 // devuelve "", 0.0 , 0
 // returns: nombre_segmento, duracion_seconds, hay_siguiente?
 func (c *Cola) Next() (string, float64, bool) {
@@ -69,7 +69,6 @@ func (c *Cola) Next() (string, float64, bool) {
 	if c.index > (c.length - 1) {
 		return "", 0.0, false
 	}
-	
 	
 	segment = c.orden[c.index]
 	duration = c.segmento[segment]
